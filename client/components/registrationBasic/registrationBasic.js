@@ -8,7 +8,9 @@ const RegistrationBasic = ({
 	handleInputChange,
 }) => {
 	const inputChange = event => {
-		const { name, value } = event.target;
+		let { name, value } = event.target;
+		if (name === 'firstName' || name === 'lastName')
+			value = value.toUpperCase();
 		handleInputChange(name, value);
 	};
 	return (

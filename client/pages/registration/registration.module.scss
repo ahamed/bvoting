@@ -1,2 +1,28 @@
 .registration {
+	font-size: 1rem;
+}
+.status-message {
+	font-weight: 300;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	&.has-error {
+		color: hsl(348, 100%, 61%);
+	}
+	&.has-success {
+		color: hsl(141, 71%, 48%);
+	}
+	&.has-info {
+		color: hsl(204, 86%, 53%);
+	}
+	&.has-warning {
+		color: hsl(48, 100%, 67%);
+	}
+}
+
+.voter-list {
+	word-break: break-all;
+	padding: 0 40px;
+
+	li {
+		margin-bottom: 25px;
+	}
 }
