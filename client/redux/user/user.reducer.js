@@ -1,8 +1,7 @@
 import userActionTypes from './user.types';
 const INITIAL_STATE = {
-	firstName: '',
-	lastName: '',
-	email: '',
+	name: '',
+	secret: '',
 	mobile: '',
 	nid: '',
 };

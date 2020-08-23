@@ -7,9 +7,10 @@ import sha256 from 'crypto-js/sha256';
 
 import styles from './registration.module.scss';
 import RegistrationBasic from '../../components/registrationBasic/registrationBasic';
+import Voter from '../../components/Voter/Voter';
 
 const Registration = ({
-	user: { firstName, lastName, mobile, email, nid },
+	user: { name, mobile, secret, nid },
 	web3: { web3, accounts, contracts },
 }) => {
 	const [message, setMessage] = useState({
@@ -20,26 +21,17 @@ const Registration = ({
 
 	useEffect(() => {
 		getVoters();
-		console.log('ComponentDidMount');
-	}, [contracts]);
+		console.log('accounts', accounts);
+	}, [contracts, accounts]);
 
 	useEffect(() => {
 		let text = 'Missing required fields: ';
+		if (!name) text += 'Voter Name, ';
+		if (!mobile) text += 'Mobile, ';
+		if (!nid) text += 'NID, ';
+		if (!secret) text += 'Secret, ';
 
-		if (!firstName) {
-			text += 'First Name, ';
-		}
-		if (!lastName) {
-			text += 'Last Name, ';
-		}
-		if (!mobile) {
-			text += 'Mobile, ';
-		}
-		if (!nid) {
-			text += 'NID, ';
-		}
-
-		if (firstName && lastName && mobile && nid) {
+		if (name && mobile && nid && secret) {
 			setMessage({
 				text:
 					'Okay! Click Register button for completing registration.',
@@ -51,7 +43,7 @@ const Registration = ({
 				type: 'error',
 			});
 		}
-	}, [firstName, lastName, mobile, nid]);
+	}, [name, mobile, nid]);
 
 	const getVoters = async () => {
 		try {
@@ -59,10 +51,10 @@ const Registration = ({
 				const voters = await contracts.registration.methods
 					.getVoters()
 					.call({
-						from: accounts[1],
+						from: accounts[0],
 					});
 				setVoters(voters);
-				console.log('voter retrieved');
+				console.log('voter retrieved', voters);
 			}
 		} catch (e) {
 			setMessage({
@@ -76,30 +68,25 @@ const Registration = ({
 	const handleRegister = async event => {
 		event.preventDefault();
 
-		if (firstName && lastName && mobile && nid) {
-			const rowString = firstName + lastName + mobile + nid;
+		if (name && mobile && nid && secret) {
+			const rowString = name + mobile + nid + secret;
 			const voterHash = '0x' + sha256(rowString).toString();
-
-			// const account = web3.eth.accounts.privateKeyToAccount(
-			// 	'0x802e4c0cbf96a726728383e2a972b417e9eda900bb03b2829cb4bad39cbf3d66'
-			// );
-			// console.log(account);
-			// const newAccount = await eth.accounts.create(voterHash);
-			// console.log(newAccount);
 
 			const { registration } = contracts;
 			const { methods } = registration;
 			const isRegistered = await methods
-				.isAlreadyRegistered(voterHash)
+				.isAlreadyRegistered(web3.utils.fromAscii(nid))
 				.call({
-					from: accounts[1],
+					from: accounts[0],
 				});
 
 			if (!isRegistered) {
 				try {
-					await methods.registerVoter(voterHash).send({
-						from: accounts[1],
-					});
+					await methods
+						.registerVoter(web3.utils.fromAscii(nid), voterHash)
+						.send({
+							from: accounts[0],
+						});
 					setMessage({
 						text: 'Registered successfully!',
 						type: 'success',
@@ -177,10 +164,10 @@ const Registration = ({
 
 						<div className='box'>
 							<h4 className='subtitle'>Voters List</h4>
-							{voters.length > 0 ? (
+							{voters && voters.length > 0 ? (
 								<ol className={styles['voter-list']}>
 									{voters.map(voter => (
-										<li key={voter}>{voter}</li>
+										<Voter key={voter} nid={voter} />
 									))}
 								</ol>
 							) : (

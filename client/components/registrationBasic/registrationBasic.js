@@ -4,33 +4,23 @@ import { handleInputChange } from '../../redux/user/user.actions';
 import FormInput from '../form-input/form-input';
 
 const RegistrationBasic = ({
-	user: { firstName, lastName, email, mobile, nid },
+	user: { name, secret, mobile, nid },
 	handleInputChange,
 }) => {
 	const inputChange = event => {
 		let { name, value } = event.target;
-		if (name === 'firstName' || name === 'lastName')
-			value = value.toUpperCase();
+		if (name === 'name') value = value.toUpperCase();
 		handleInputChange(name, value);
 	};
 	return (
 		<div className='vb-registration-basics'>
 			<div className='columns'>
-				<div className='column is-6'>
+				<div className='column is-12'>
 					<FormInput
 						type='text'
-						name='firstName'
-						label='First Name'
-						value={firstName}
-						onChange={inputChange}
-					/>
-				</div>
-				<div className='column is-6'>
-					<FormInput
-						type='text'
-						name='lastName'
-						label='Last Name'
-						value={lastName}
+						name='name'
+						label='Voter Full Name'
+						value={name}
 						onChange={inputChange}
 					/>
 				</div>
@@ -40,18 +30,18 @@ const RegistrationBasic = ({
 				<div className='column is-6'>
 					<FormInput
 						type='text'
-						name='email'
-						label='Email (optional)'
-						value={email}
+						name='mobile'
+						label='Mobile'
+						value={mobile}
 						onChange={inputChange}
 					/>
 				</div>
 				<div className='column is-6'>
 					<FormInput
-						type='text'
-						name='mobile'
-						label='Mobile'
-						value={mobile}
+						type='password'
+						name='secret'
+						label='Secret Key'
+						value={secret}
 						onChange={inputChange}
 					/>
 				</div>

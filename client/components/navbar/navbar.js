@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Navbar = () => {
 	const [expand, setExpand] = useState(false);
+	const router = useRouter();
 
 	return (
 		<nav
-			className='navbar is-success'
+			className='navbar is-danger'
 			role='navigation'
 			aria-label='main navigation'
 		>
@@ -37,15 +39,40 @@ const Navbar = () => {
 				className={`navbar-menu ${expand ? 'is-active' : ''}`}
 				id='mainNavbar'
 			>
-				<div className='navbar-start'>
+				<div className={`navbar-start`}>
 					<Link href='/'>
-						<a className='navbar-item'>Home</a>
+						<a
+							className={`navbar-item ${
+								router.pathname == '/' ? 'is-active' : ''
+							}`}
+						>
+							Home
+						</a>
 					</Link>
 				</div>
 
 				<div className='navbar-end'>
+					<Link href='/candidate'>
+						<a
+							className={`navbar-item ${
+								router.pathname == '/candidate'
+									? 'is-active'
+									: ''
+							}`}
+						>
+							Candidate Registration
+						</a>
+					</Link>
 					<Link href='/registration'>
-						<a className='navbar-item'>Registration</a>
+						<a
+							className={`navbar-item ${
+								router.pathname == '/registration'
+									? 'is-active'
+									: ''
+							}`}
+						>
+							Registration
+						</a>
 					</Link>
 				</div>
 			</div>

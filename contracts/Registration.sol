@@ -6,16 +6,19 @@ contract Registration {
 
     struct Voter {
         address voterAddress;
+        bytes32 voterHash;
         bool isRegistered;
         uint coin;
     }
     
     mapping(bytes32 => Voter) voters;
-    mapping(address => bool) votersAddress;
-    bytes32[] votersHash;
+    bytes32[] nids;
+
+    event ContractCreator(address _creator);
 
     constructor() public {
         electionCommissioner = msg.sender;
+        emit ContractCreator(electionCommissioner);
     }
     
     modifier commissionerOnly {
@@ -25,9 +28,9 @@ contract Registration {
 
     event RegistrationCompleted(bool indexed _status);
     
-    function providerVotersVoteCoin() public commissionerOnly {
-        for (uint i = 0; i < votersHash.length; i++) {
-            voters[votersHash[i]].coin = 1;
+    function providerVotersVoteCoin(uint _coins) public commissionerOnly {
+        for (uint i = 0; i < nids.length; i++) {
+            voters[nids[i]].coin = _coins;
         }
     }
     
@@ -35,32 +38,27 @@ contract Registration {
         registrationStatus = _status;
     }
     
-    function registerVoter(bytes32 _voterHash) public {
+    function registerVoter(bytes32 _nid, bytes32 _voterHash) public {
         require(registrationStatus, 'Registration Process not yet opened! Please wait for opening the registration being open.');
         require(!isAlreadyRegistered(_voterHash), 'You are already registered!');
 
-        voters[_voterHash] = Voter({voterAddress: msg.sender, isRegistered: true, coin: 0});
-        votersHash.push(_voterHash);
-        votersAddress[msg.sender] = true;
+        voters[_nid] = Voter({voterAddress: msg.sender, voterHash: _voterHash, isRegistered: true, coin: 0});
+        nids.push(_nid);
         emit RegistrationCompleted(true);
     }
     
-    function isAlreadyRegistered(bytes32 _voterHash) public view returns(bool) {
-        if (voters[_voterHash].isRegistered) return true;
+    function isAlreadyRegistered(bytes32 _nid) public view returns(bool) {
+        if (voters[_nid].isRegistered) return true;
         return false;
     }
     
-    function isElectionComissioner(address _address) public view returns(bool) {
-        if (_address == electionCommissioner) return true;
-        return false;
-    }
     
-    function getVoter(bytes32 _voterHash) public view returns (address, bool, uint) {
-        Voter memory v = voters[_voterHash];
-        return (v.voterAddress, v.isRegistered, v.coin);
+    function getVoter(bytes32 _nid) public view returns (address, bytes32, bool, uint) {
+        Voter memory v = voters[_nid];
+        return (v.voterAddress, v.voterHash, v.isRegistered, v.coin);
     }
     
     function getVoters() public view returns (bytes32[] memory) {
-        return votersHash;
+        return nids;
     }
 }
