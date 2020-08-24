@@ -5,6 +5,7 @@ import Head from 'next/head';
 import Layout from '../../components/layout/layout';
 import FormInput from '../../components/form-input/form-input';
 import FormSelect from '../../components/form-input/form-select';
+import Message from '../../components/message/message';
 
 import parties from '../../data/parties';
 
@@ -16,9 +17,29 @@ const Candidate = ({ web3: { web3, contracts, accounts } }) => {
 		partyId: '',
 	});
 
+	const [message, setMessage] = useState({
+		text: '',
+		type: '',
+	});
+
 	useEffect(() => {
-		console.log('contracts', contracts);
+		if (contracts && contracts.CReg) getCandidates();
 	}, [contracts, accounts]);
+
+	const getCandidates = async () => {
+		try {
+			if (contracts.CReg) {
+				const candidates = await contracts.CReg.methods
+					.getCandidates()
+					.call({
+						from: accounts[0],
+						gas: 8000000,
+					});
+			}
+		} catch (e) {
+			console.error(e);
+		}
+	};
 
 	const { name, mobile, nid, partyId } = candidate;
 
@@ -32,7 +53,7 @@ const Candidate = ({ web3: { web3, contracts, accounts } }) => {
 	const addCandidate = async event => {
 		event.preventDefault();
 		const {
-			candidate: { methods },
+			CReg: { methods },
 		} = contracts;
 
 		const { registration } = contracts;
@@ -45,26 +66,39 @@ const Candidate = ({ web3: { web3, contracts, accounts } }) => {
 				.call({ from: accounts[0] });
 
 			if (isRegisteredAsVoter) {
-				await methods
-					.registerCandidate(
-						name,
-						mobile,
-						web3.utils.fromAscii(nid),
-						partyId >> 0
-					)
-					.send({
-						from: accounts[0],
+				try {
+					await methods
+						.registerCandidate(
+							name,
+							mobile,
+							web3.utils.fromAscii(nid),
+							partyId >> 0
+						)
+						.send({
+							from: accounts[0],
+							gas: 8000000,
+						});
+					setMessage({
+						type: 'success',
+						text: 'Candidate added successfully!',
 					});
-
-				// const users = await methods
-				// 	.getCandidates()
-				// 	.call({ from: accounts[0] });
-				// console.log(users);
+				} catch (e) {
+					setMessage({
+						type: 'error',
+						text: e,
+					});
+				}
 			} else {
-				console.log('Candidate must have to be a voter first!');
+				setMessage({
+					type: 'error',
+					text: 'Candidate must have to be a voter first!',
+				});
 			}
 		} catch (e) {
-			console.error(e);
+			setMessage({
+				type: 'error',
+				text: e,
+			});
 		}
 	};
 
@@ -139,6 +173,10 @@ const Candidate = ({ web3: { web3, contracts, accounts } }) => {
 								</div>
 							</div>
 						</div>
+					</div>
+
+					<div className='column is-6'>
+						<Message type={message.type} message={message.text} />
 					</div>
 				</div>
 			</div>

@@ -8,6 +8,7 @@ import sha256 from 'crypto-js/sha256';
 import styles from './registration.module.scss';
 import RegistrationBasic from '../../components/registrationBasic/registrationBasic';
 import Voter from '../../components/Voter/Voter';
+import Message from '../../components/message/message';
 
 const Registration = ({
 	user: { name, mobile, secret, nid },
@@ -146,21 +147,7 @@ const Registration = ({
 						</div>
 					</div>
 					<div className='column is-6 has-text-centered'>
-						<div className='box'>
-							<h4 className='subtitle'>Registration Status</h4>
-							<p
-								className={`${styles['status-message']} ${
-									styles['has-' + message.type]
-								}`}
-							>
-								<span
-									className={`icon has-text-${message.type}`}
-								>
-									{renderStatusIcon(message.type)}
-								</span>
-								{message.text}
-							</p>
-						</div>
+						<Message type={message.type} message={message.text} />
 
 						<div className='box'>
 							<h4 className='subtitle'>Voters List</h4>

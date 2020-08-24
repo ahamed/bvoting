@@ -1,6 +1,6 @@
 pragma solidity >=0.4.22 <0.7.0;
 
-contract CandidateRegistration {
+contract CReg {
     
     // Contract creator address i.e the commissioner
     address commissioner;
