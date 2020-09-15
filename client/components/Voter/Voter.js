@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
+import styles from './voter.module.scss';
+
 const Voter = ({ nid, web3: { contracts, accounts } }) => {
 	const [voter, setVoter] = useState('');
 
@@ -8,8 +10,7 @@ const Voter = ({ nid, web3: { contracts, accounts } }) => {
 		(async () => {
 			if (contracts) {
 				const voter = await getVoter(nid);
-				console.log('voter voter', voter);
-				setVoter(voter[1]);
+				setVoter({ hash: voter[1], coin: voter[4] });
 			}
 		})();
 	}, [nid, contracts, accounts]);
@@ -21,7 +22,14 @@ const Voter = ({ nid, web3: { contracts, accounts } }) => {
 		return voter;
 	};
 
-	return <li>{voter}</li>;
+	return (
+		<li className={styles['voter-item']}>
+			<div>
+				<div>{voter.hash}</div>
+				<strong>coin: </strong> {voter.coin}
+			</div>
+		</li>
+	);
 };
 
 const mapPropsToState = state => ({

@@ -1,19 +1,17 @@
-import { connect } from 'react-redux';
-import { handleInputChange } from '../../redux/user/user.actions';
+import React, { useEffect, useState } from 'react';
 
 import FormInput from '../form-input/form-input';
 
-const RegistrationBasic = ({
-	user: { name, secret, mobile, nid, region },
-	handleInputChange,
-}) => {
-	const inputChange = event => {
+const Authorization = ({ name, mobile, secret, nid, region, inputChange }) => {
+	const handleChange = event => {
+		event.preventDefault();
 		let { name, value } = event.target;
 		if (name === 'name') value = value.toUpperCase();
-		handleInputChange(name, value);
+		inputChange(name, value);
 	};
+
 	return (
-		<div className='vb-registration-basics'>
+		<div className='voter-authorization'>
 			<div className='columns'>
 				<div className='column is-12'>
 					<FormInput
@@ -21,7 +19,7 @@ const RegistrationBasic = ({
 						name='name'
 						label='Voter Full Name'
 						value={name}
-						onChange={inputChange}
+						onChange={handleChange}
 					/>
 				</div>
 			</div>
@@ -33,7 +31,7 @@ const RegistrationBasic = ({
 						name='mobile'
 						label='Mobile'
 						value={mobile}
-						onChange={inputChange}
+						onChange={handleChange}
 					/>
 				</div>
 				<div className='column is-6'>
@@ -42,7 +40,7 @@ const RegistrationBasic = ({
 						name='secret'
 						label='Secret Key'
 						value={secret}
-						onChange={inputChange}
+						onChange={handleChange}
 					/>
 				</div>
 			</div>
@@ -54,7 +52,7 @@ const RegistrationBasic = ({
 						name='nid'
 						label='National ID'
 						value={nid}
-						onChange={inputChange}
+						onChange={handleChange}
 					/>
 				</div>
 				<div className='column is-4'>
@@ -63,7 +61,7 @@ const RegistrationBasic = ({
 						name='region'
 						label='Region'
 						value={region}
-						onChange={inputChange}
+						onChange={handleChange}
 					/>
 				</div>
 			</div>
@@ -71,13 +69,4 @@ const RegistrationBasic = ({
 	);
 };
 
-const mapStateToProps = state => ({
-	user: state.user,
-});
-
-const mapDispatchToProps = dispatch => ({
-	handleInputChange: (name, value) =>
-		dispatch(handleInputChange(name, value)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrationBasic);
+export default Authorization;

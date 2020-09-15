@@ -8,12 +8,14 @@ import FormSelect from '../../components/form-input/form-select';
 import Message from '../../components/message/message';
 
 import parties from '../../data/parties';
+import swal from 'sweetalert';
 
-const Candidate = ({ web3: { web3, contracts, accounts } }) => {
+const CandidateRegistration = ({ web3: { web3, contracts, accounts } }) => {
 	const [candidate, setCandidate] = useState({
 		name: '',
 		mobile: '',
 		nid: '',
+		region: '',
 		partyId: '',
 	});
 
@@ -22,26 +24,7 @@ const Candidate = ({ web3: { web3, contracts, accounts } }) => {
 		type: '',
 	});
 
-	useEffect(() => {
-		if (contracts && contracts.CReg) getCandidates();
-	}, [contracts, accounts]);
-
-	const getCandidates = async () => {
-		try {
-			if (contracts.CReg) {
-				const candidates = await contracts.CReg.methods
-					.getCandidates()
-					.call({
-						from: accounts[0],
-						gas: 8000000,
-					});
-			}
-		} catch (e) {
-			console.error(e);
-		}
-	};
-
-	const { name, mobile, nid, partyId } = candidate;
+	const { name, mobile, nid, region, partyId } = candidate;
 
 	const inputChange = event => {
 		event.preventDefault();
@@ -58,20 +41,30 @@ const Candidate = ({ web3: { web3, contracts, accounts } }) => {
 
 		const { registration } = contracts;
 
-		const { name, mobile, nid, partyId } = candidate;
+		const { name, mobile, nid, region, partyId } = candidate;
+
+		const confirm = await swal(
+			'Are you sure that the provided information are authentic and correct? Careful about your information, you cannot edit this information in future.',
+			{
+				buttons: ['Check Again', 'Yes'],
+			}
+		);
+
+		if (!confirm) return;
 
 		try {
 			const isRegisteredAsVoter = await registration.methods
-				.isAlreadyRegistered(web3.utils.fromAscii(nid))
+				.isAlreadyRegistered(web3.utils.asciiToHex(nid))
 				.call({ from: accounts[0] });
 
 			if (isRegisteredAsVoter) {
 				try {
 					await methods
 						.registerCandidate(
-							name,
-							mobile,
-							web3.utils.fromAscii(nid),
+							web3.utils.asciiToHex(name),
+							web3.utils.asciiToHex(mobile),
+							web3.utils.asciiToHex(nid),
+							web3.utils.asciiToHex(region),
 							partyId >> 0
 						)
 						.send({
@@ -82,17 +75,41 @@ const Candidate = ({ web3: { web3, contracts, accounts } }) => {
 						type: 'success',
 						text: 'Candidate added successfully!',
 					});
+
+					const resp = await swal(
+						'Success',
+						'Candidate added successfully!'
+					);
+					if (resp)
+						setCandidate({
+							name: '',
+							mobile: '',
+							nid: '',
+							region: '',
+							partyId: '',
+						});
 				} catch (e) {
 					setMessage({
 						type: 'error',
-						text: e,
+						text:
+							'Something went wrong! This candidate may registered already or you are not permitted to perform this task.',
 					});
+					swal(
+						'Error!',
+						'Something went wrong! This candidate may registered already or you are not permitted to perform this task.',
+						'error'
+					);
 				}
 			} else {
 				setMessage({
 					type: 'error',
 					text: 'Candidate must have to be a voter first!',
 				});
+				swal(
+					'Notice!',
+					'Candidate must have to be a voter first!',
+					'info'
+				);
 			}
 		} catch (e) {
 			setMessage({
@@ -108,10 +125,10 @@ const Candidate = ({ web3: { web3, contracts, accounts } }) => {
 				<title>Candidate Registration</title>
 			</Head>
 			<div className='candidate-registration'>
-				<h1 className='title'>Candidate Registration</h1>
 				<div className='columns'>
-					<div className='column is-6'>
+					<div className='column is-8'>
 						<div className='box'>
+							<h1 className='subtitle'>Candidate Registration</h1>
 							<div className='columns'>
 								<div className='column is-12'>
 									<FormInput
@@ -125,7 +142,7 @@ const Candidate = ({ web3: { web3, contracts, accounts } }) => {
 							</div>
 
 							<div className='columns'>
-								<div className='column is-6'>
+								<div className='column is-4'>
 									<FormInput
 										type='text'
 										name='mobile'
@@ -151,12 +168,21 @@ const Candidate = ({ web3: { web3, contracts, accounts } }) => {
 							</div>
 
 							<div className='columns'>
-								<div className='column'>
+								<div className='column is-8'>
 									<FormInput
 										type='text'
 										name='nid'
 										label='National ID'
 										value={nid}
+										onChange={inputChange}
+									/>
+								</div>
+								<div className='column is-4'>
+									<FormInput
+										type='text'
+										name='region'
+										label='Region'
+										value={region}
 										onChange={inputChange}
 									/>
 								</div>
@@ -189,4 +215,4 @@ const mapPropsToState = state => ({
 	web3: state.web3,
 });
 
-export default connect(mapPropsToState)(Candidate);
+export default connect(mapPropsToState)(CandidateRegistration);

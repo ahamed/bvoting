@@ -1,6 +1,9 @@
 .status-message {
 	font-weight: 300;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	word-break: break-word;
+	max-height: 320px;
+	overflow-y: auto;
 	&.has-error {
 		color: hsl(348, 100%, 61%);
 	}

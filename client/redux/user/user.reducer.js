@@ -4,6 +4,7 @@ const INITIAL_STATE = {
 	secret: '',
 	mobile: '',
 	nid: '',
+	region: '',
 };
 
 const { HANDLE_INPUT_CHANGE } = userActionTypes;

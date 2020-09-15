@@ -8,9 +8,10 @@ contract CReg {
     // Candidate information. This contains the name, mobile, nid,
     // partyId(which contains all the party information) and the votes he/she gains.
     struct Candidate {
-        string name;
-        string mobile;
+        bytes32 name;
+        bytes32 mobile;
         bytes32 nid;
+        bytes32 region;
         uint partyId;
         bool isRegistered;
         uint votes;
@@ -33,7 +34,7 @@ contract CReg {
     }
     
     // Register a candidate. And this could be done only by commissioner.
-    function registerCandidate(string memory _name, string memory _mobile, bytes32 _nid, uint _partyId) public commissionerOnly{
+    function registerCandidate(bytes32 _name, bytes32 _mobile, bytes32 _nid, bytes32 _region, uint _partyId) public commissionerOnly{
         require(!isAlreadyRegistered(_nid), "This candidate has already been registered!");
 
         nids.push(_nid);
@@ -41,10 +42,17 @@ contract CReg {
             name: _name,
             mobile: _mobile,
             nid: _nid,
+            region: _region,
             partyId: _partyId,
             isRegistered: true,
             votes: 0
         });
+    }
+
+    function addVotesToTheAccount(bytes32[] memory _nids) public commissionerOnly {
+        for (uint i = 0; i < _nids.length; i++) {
+            candidates[_nids[i]].votes++;
+        }
     }
     
     // Check if the candidate is already registered.
@@ -58,8 +66,25 @@ contract CReg {
     }
     
     // Get a specific candidate by NID.
-    function getCandidate(bytes32 _nid) public view returns(string memory, string memory, uint, uint) {
+    function getCandidate(bytes32 _nid) public view returns(bytes32, bytes32, bytes32, uint, uint) {
         Candidate memory c = candidates[_nid];
-        return (c.name, c.mobile, c.partyId, c.votes);
+        return (c.name, c.mobile, c.region, c.partyId, c.votes);
+    }
+
+    function getCandidatesByRegion(bytes32 _region) public view returns(bytes32[] memory) {
+        bytes32[] memory can = new bytes32[](nids.length);
+        uint index = 0;
+        for (uint i = 0; i < nids.length; i++) {
+            if (candidates[nids[i]].region == _region) {
+                can[index] = nids[i];
+                index++;
+            }
+        }
+        return can;
+    }
+
+    function addVoteForCandidate(bytes32 _nid) public {
+        require(isAlreadyRegistered(_nid), 'Invalid Candidate');
+        candidates[_nid].votes++;
     }
 }

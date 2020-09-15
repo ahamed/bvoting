@@ -2,6 +2,7 @@ import { takeLatest, call, put, all } from 'redux-saga/effects';
 import getWeb3 from '../../getWeb3';
 import Registration from '../../ethereum/contracts/Registration.json';
 import CReg from '../../ethereum/contracts/CReg.json';
+import Vote from '../../ethereum/contracts/Vote.json';
 
 import web3ActionTypes from './web3.types';
 import {
@@ -43,10 +44,20 @@ export function* handleWeb3Instantiation() {
 			}
 		);
 
+		const deployedNetworkForVote = Vote.networks[networkId];
+		const votes = yield new web3.eth.Contract(
+			Vote.abi,
+			deployedNetworkForVote && deployedNetworkForVote.address,
+			{
+				from: accounts[0],
+			}
+		);
+
 		yield put(web3InstanceOnSuccess(web3));
 		yield put(setAccounts(accounts));
 		yield put(setContract({ name: 'registration', contract: instance }));
 		yield put(setContract({ name: 'CReg', contract: candidate }));
+		yield put(setContract({ name: 'vote', contract: votes }));
 	} catch (error) {
 		// Catch any errors for any of the above operations.
 		put(onInstantiationError(error));

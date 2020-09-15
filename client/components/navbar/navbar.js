@@ -8,14 +8,15 @@ const Navbar = () => {
 
 	return (
 		<nav
-			className='navbar is-danger'
+			className='navbar is-black'
 			role='navigation'
 			aria-label='main navigation'
 		>
 			<div className={`navbar-brand`}>
 				<Link href='/'>
 					<a className='navbar-item'>
-						<img src='/logo.svg' alt='Site Logo' />
+						<img src='/logo.png' alt='Site Logo' />
+						<strong>SBVOTE</strong>
 					</a>
 				</Link>
 
@@ -49,31 +50,79 @@ const Navbar = () => {
 							Home
 						</a>
 					</Link>
+					<Link href='/voters'>
+						<a
+							className={`navbar-item ${
+								router.pathname == '/voters' ? 'is-active' : ''
+							}`}
+						>
+							Voters
+						</a>
+					</Link>
+					<Link href='/candidates'>
+						<a
+							className={`navbar-item ${
+								router.pathname == '/candidates'
+									? 'is-active'
+									: ''
+							}`}
+						>
+							Candidates
+						</a>
+					</Link>
+					<Link href='/vote'>
+						<a
+							className={`navbar-item ${
+								router.pathname == '/vote' ? 'is-active' : ''
+							}`}
+						>
+							Cast Vote
+						</a>
+					</Link>
+					<Link href='/restricted'>
+						<a
+							className={`navbar-item ${
+								router.pathname == '/restricted'
+									? 'is-active'
+									: ''
+							}`}
+						>
+							EC
+						</a>
+					</Link>
 				</div>
 
 				<div className='navbar-end'>
-					<Link href='/candidate'>
-						<a
-							className={`navbar-item ${
-								router.pathname == '/candidate'
-									? 'is-active'
-									: ''
-							}`}
-						>
-							Candidate Registration
-						</a>
-					</Link>
-					<Link href='/registration'>
-						<a
-							className={`navbar-item ${
-								router.pathname == '/registration'
-									? 'is-active'
-									: ''
-							}`}
-						>
+					<div className='navbar-item has-dropdown is-hoverable'>
+						<a href='#' className='navbar-link'>
 							Registration
 						</a>
-					</Link>
+						<div className='navbar-dropdown'>
+							<Link href='/candidate-registration'>
+								<a
+									className={`navbar-item ${
+										router.pathname ==
+										'/candidate-registration'
+											? 'is-active'
+											: ''
+									}`}
+								>
+									Candidate
+								</a>
+							</Link>
+							<Link href='/registration'>
+								<a
+									className={`navbar-item ${
+										router.pathname == '/registration'
+											? 'is-active'
+											: ''
+									}`}
+								>
+									Voter
+								</a>
+							</Link>
+						</div>
+					</div>
 				</div>
 			</div>
 		</nav>
