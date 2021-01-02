@@ -1,0 +1,21 @@
+.copy-wrapper {
+	position: relative;
+	.copy-icon {
+		color: #ced4da;
+		cursor: pointer;
+		transition: all 0.3s;
+		&:hover {
+			color: #222;
+		}
+	}
+
+	.copy-msg {
+		background: rgba(0, 0, 0, 0.7);
+		padding: 5px;
+		color: #fff;
+		font-size: 10px;
+		position: absolute;
+		left: 55px;
+		border-radius: 3px;
+	}
+}

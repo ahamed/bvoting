@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 
 import styles from './voter.module.scss';
 
-const Voter = ({ nid, web3: { contracts, accounts } }) => {
-	const [voter, setVoter] = useState('');
+const Voter = ({ index, nid, web3: { web3, contracts, accounts } }) => {
+	const [voter, setVoter] = useState({});
 
 	useEffect(() => {
 		(async () => {
 			if (contracts) {
 				const voter = await getVoter(nid);
-				setVoter({ hash: voter[1], coin: voter[4] });
+				setVoter({ hash: voter[1], region: voter[2], coin: voter[3] });
 			}
 		})();
 	}, [nid, contracts, accounts]);
@@ -23,12 +23,16 @@ const Voter = ({ nid, web3: { contracts, accounts } }) => {
 	};
 
 	return (
-		<li className={styles['voter-item']}>
-			<div>
-				<div>{voter.hash}</div>
-				<strong>coin: </strong> {voter.coin}
-			</div>
-		</li>
+		voter &&
+		Object.keys(voter).length > 0 && (
+			<tr className={styles['voter-item']}>
+				<td>{index + 1}</td>
+				<td>{web3.utils.hexToAscii(voter.region)}</td>
+				{/* <td>{voter.region}</td> */}
+				<td>{voter.hash}</td>
+				<td>{voter.coin}</td>
+			</tr>
+		)
 	);
 };
 

@@ -44,20 +44,34 @@ const Voters = ({ web3: { contracts, web3, accounts } }) => {
 			</Head>
 			<div className='voters-list'>
 				<div className='columns'>
-					<div className='column is-8'>
+					<div className='column'>
 						<div className='box'>
-							<h3 className='subtitle'>Registered Voters Hash</h3>
-							{voters && (
-								<ol className={styles['voter-list']}>
-									{voters.map(voter => (
-										<Voter key={voter} nid={voter} />
+							<h3 className='subtitle'>Registered Voters</h3>
+							{voters && voters.length > 0 ? (
+								<table className='table is-fullwidth'>
+									<thead>
+										<th>#</th>
+										<th>Region</th>
+										<th>Hash</th>
+										<th>Vote Coin</th>
+									</thead>
+									{voters.map((voter, index) => (
+										<Voter
+											key={index}
+											index={index}
+											nid={voter}
+										/>
 									))}
-								</ol>
+								</table>
+							) : (
+								<p
+									className='subtitle has-text-danger has-text-centered'
+									style={{ padding: '40px' }}
+								>
+									No voter registered!
+								</p>
 							)}
 						</div>
-					</div>
-					<div className='column is-4'>
-						<Message type={message.type} message={message.text} />
 					</div>
 				</div>
 			</div>

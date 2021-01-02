@@ -16,7 +16,7 @@ const Navbar = () => {
 				<Link href='/'>
 					<a className='navbar-item'>
 						<img src='/logo.png' alt='Site Logo' />
-						<strong>SBVOTE</strong>
+						<strong>BVOTING</strong>
 					</a>
 				</Link>
 
@@ -87,7 +87,16 @@ const Navbar = () => {
 									: ''
 							}`}
 						>
-							EC
+							Election Commission
+						</a>
+					</Link>
+					<Link href='/verify'>
+						<a
+							className={`navbar-item ${
+								router.pathname == '/verify' ? 'is-active' : ''
+							}`}
+						>
+							Verify
 						</a>
 					</Link>
 				</div>

@@ -8,20 +8,20 @@ contract CReg {
     // Candidate information. This contains the name, mobile, nid,
     // partyId(which contains all the party information) and the votes he/she gains.
     struct Candidate {
-        bytes32 name;
-        bytes32 mobile;
-        bytes32 nid;
-        bytes32 region;
-        uint partyId;
         bool isRegistered;
+        uint16 partyId;
+        bytes16 mobile;
+        bytes20 nid;
+        bytes20 region;
+        bytes32 name;
         uint votes;
     }
     
     // Store the condidates to the nid => Candidate mapping.
-    mapping(bytes32 => Candidate) candidates;
+    mapping(bytes20 => Candidate) candidates;
     
     // Store the nids for easy access.
-    bytes32[] nids;
+    bytes20[] nids;
     
     constructor() public {
         commissioner = msg.sender;
@@ -33,8 +33,13 @@ contract CReg {
         _;
     }
     
+    // Check if the candidate is already registered.
+    function isAlreadyRegistered (bytes20 _nid) public view returns(bool) {
+        return candidates[_nid].isRegistered;
+    }
+    
     // Register a candidate. And this could be done only by commissioner.
-    function registerCandidate(bytes32 _name, bytes32 _mobile, bytes32 _nid, bytes32 _region, uint _partyId) public commissionerOnly{
+    function registerCandidate(bytes32 _name, bytes16 _mobile, bytes20 _nid, bytes20 _region, uint16 _partyId) public commissionerOnly{
         require(!isAlreadyRegistered(_nid), "This candidate has already been registered!");
 
         nids.push(_nid);
@@ -48,31 +53,27 @@ contract CReg {
             votes: 0
         });
     }
+    
+        // Get all the candidates
+    function getCandidates() public view returns(bytes20[] memory) {
+        return nids;
+    }
+    
+    // Get a specific candidate by NID.
+    function getCandidate(bytes20 _nid) public view returns(bytes32, bytes16, bytes20, uint16, uint) {
+        Candidate memory c = candidates[_nid];
+        return (c.name, c.mobile, c.region, c.partyId, c.votes);
+    }
 
-    function addVotesToTheAccount(bytes32[] memory _nids) public commissionerOnly {
+    function addVotesToTheAccount(bytes20[] memory _nids) public commissionerOnly {
         for (uint i = 0; i < _nids.length; i++) {
             candidates[_nids[i]].votes++;
         }
     }
     
-    // Check if the candidate is already registered.
-    function isAlreadyRegistered (bytes32 _nid) public view returns(bool) {
-        return candidates[_nid].isRegistered;
-    }
-    
-    // Get all the candidates
-    function getCandidates() public view returns(bytes32[] memory) {
-        return nids;
-    }
-    
-    // Get a specific candidate by NID.
-    function getCandidate(bytes32 _nid) public view returns(bytes32, bytes32, bytes32, uint, uint) {
-        Candidate memory c = candidates[_nid];
-        return (c.name, c.mobile, c.region, c.partyId, c.votes);
-    }
 
-    function getCandidatesByRegion(bytes32 _region) public view returns(bytes32[] memory) {
-        bytes32[] memory can = new bytes32[](nids.length);
+    function getCandidatesByRegion(bytes20 _region) public view returns(bytes20[] memory) {
+        bytes20[] memory can = new bytes20[](nids.length);
         uint index = 0;
         for (uint i = 0; i < nids.length; i++) {
             if (candidates[nids[i]].region == _region) {
@@ -81,10 +82,5 @@ contract CReg {
             }
         }
         return can;
-    }
-
-    function addVoteForCandidate(bytes32 _nid) public {
-        require(isAlreadyRegistered(_nid), 'Invalid Candidate');
-        candidates[_nid].votes++;
     }
 }

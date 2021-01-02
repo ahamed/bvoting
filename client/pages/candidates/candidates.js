@@ -43,25 +43,40 @@ const Candidates = ({ web3: { contracts, accounts, web3 } }) => {
 			</Head>
 			<div className='candidates-list'>
 				<div className='columns'>
-					<div className='column is-8'>
+					<div className='column'>
 						<div className={`box ${styles['candidate-list']}`}>
 							<h2 className='subtitle'>Registered Candidates</h2>
 							{candidates && candidates.length > 0 ? (
-								<ol>
-									{candidates.map(candidate => (
-										<Candidate
-											key={candidate}
-											nid={candidate}
-										/>
-									))}
-								</ol>
+								<table className='table is-fullwidth is-striped'>
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>Name</th>
+											<th>Region</th>
+											<th>Party Name</th>
+											<th>Party Symbol</th>
+											<th>Votes</th>
+										</tr>
+									</thead>
+									<tbody>
+										{candidates.map((candidate, index) => (
+											<Candidate
+												key={candidate}
+												nid={candidate}
+												index={index}
+											/>
+										))}
+									</tbody>
+								</table>
 							) : (
-								<p>No candidate registered</p>
+								<p
+									className='subtitle has-text-danger has-text-centered'
+									style={{ padding: '40px' }}
+								>
+									No candidate registered!
+								</p>
 							)}
 						</div>
-					</div>
-					<div className='column is-4'>
-						<Message type={message.type} message={message.text} />
 					</div>
 				</div>
 			</div>

@@ -51,6 +51,18 @@ contract Vote {
         Cast memory vt = votes[_id];
         return (vt.id, vt.who, vt.whom);
     }
+
+    function verifyVote(bytes32 _nid) public view returns (string memory) {
+        string memory status = '';
+        for (uint i = 0; i < ids.length; i++) {
+            if (votes[ids[i]].who == _nid) {
+                status = votes[ids[i]].whom;
+                break;
+            }
+        }
+
+        return status;
+    }
     
     function countTotalVotes() public view returns (uint) {
         return total;

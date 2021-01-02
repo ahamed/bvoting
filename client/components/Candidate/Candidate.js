@@ -5,7 +5,7 @@ import parties from '../../data/parties';
 
 import styles from './Candidate.module.scss';
 
-const Candidate = ({ nid, web3: { contracts, accounts, web3 } }) => {
+const Candidate = ({ index, nid, web3: { contracts, accounts, web3 } }) => {
 	const [candidate, setCandidate] = useState({});
 
 	useEffect(() => {
@@ -34,32 +34,20 @@ const Candidate = ({ nid, web3: { contracts, accounts, web3 } }) => {
 	return (
 		candidate &&
 		Object.values(candidate).length > 0 && (
-			<li className={styles['candidate-item']}>
-				<div>
-					<strong>Name: </strong>{' '}
-					<span>{web3.utils.hexToAscii(candidate.name)}</span>
-				</div>
-				<div>
-					<strong>Party Name: </strong>{' '}
-					<span
-						className={`${styles['party-symbol']} ${
-							parties[candidate.partyId].symbol
-						}`}
-						style={{ color: parties[candidate.partyId].color }}
-					></span>
-					<span className={styles['party-name']}>
-						{parties[candidate.partyId].name}
-					</span>
-				</div>
-				<div>
-					<strong>Region: </strong>
-					<span>{web3.utils.hexToAscii(candidate.region)}</span>
-				</div>
-				<div>
-					<strong>Votes: </strong>
-					<span>{candidate.votes}</span>
-				</div>
-			</li>
+			<tr>
+				<td>{index + 1}</td>
+				<td>{web3.utils.hexToAscii(candidate.name)}</td>
+				<td>{web3.utils.hexToAscii(candidate.region)}</td>
+				<td>{parties[candidate.partyId].name}</td>
+				<td>
+					<img
+						src={parties[candidate.partyId].src}
+						alt={parties[candidate.partyId].name}
+						width={30}
+					/>
+				</td>
+				<td>{candidate.votes}</td>
+			</tr>
 		)
 	);
 };

@@ -12,7 +12,20 @@ module.exports = {
 			host: '127.0.0.1',
 			port: 7545,
 			network_id: '*',
-			gas: 8721975,
+			gas: 4500000,
+		},
+	},
+	compilers: {
+		solc: {
+			parser: 'solcjs',
+			evmVersion: 'byzantium',
+			settings: {
+				// See the solidity docs for advice about optimization and evmVersion
+				optimizer: {
+					enabled: true,
+					runs: 200,
+				},
+			},
 		},
 	},
 };

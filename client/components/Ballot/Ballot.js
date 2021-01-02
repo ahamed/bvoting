@@ -156,15 +156,11 @@ const Ballot = ({
 									<td>{data.name}</td>
 									<td>{parties[data.partyId].name}</td>
 									<td>
-										<span
-											className={
-												parties[data.partyId].symbol
-											}
-											style={{
-												color:
-													parties[data.partyId].color,
-											}}
-										></span>
+										<img
+											src={parties[data.partyId].src}
+											alt=''
+											width={30}
+										/>
 									</td>
 									<td>
 										<input
