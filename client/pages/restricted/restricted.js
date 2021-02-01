@@ -8,6 +8,8 @@ import swal from 'sweetalert';
 
 import Head from 'next/head';
 import Layout from '../../components/layout/layout';
+import ElectionTime from '../../components/electionTime';
+import Initiating from '../../components/VoteCoins';
 
 import Message from '../../components/message/message';
 
@@ -28,6 +30,7 @@ const Restricted = ({ web3: { contracts, web3, accounts } }) => {
 	const [merkleRoot, setRoot] = useState(null);
 	const [tnx, setTnx] = useState('');
 	const [copyMsg, setMsg] = useState('');
+	const [showProgress, setShowProgress] = useState(false);
 
 	let timeout = null;
 	const router = useRouter();
@@ -238,18 +241,11 @@ const Restricted = ({ web3: { contracts, web3, accounts } }) => {
 				<title>EC Area</title>
 			</Head>
 			<div className='restricted-area'>
-				<div className='columns'>
-					<div className='column'>
-						<div className='box has-text-centered'>
-							<h2 className='subtitle'>
-								Create the election and make it available for
-								voters.
-							</h2>
-							<button className='button is-dark'>
-								Create Election
-							</button>
-						</div>
-					</div>
+				<div className="mb-5">
+					<ElectionTime onShowProgress={(val) => setShowProgress(val) } />
+				</div>
+				<div className="mb-5">
+					{showProgress && <Initiating />}
 				</div>
 				<div className='columns'>
 					<div className='column'>

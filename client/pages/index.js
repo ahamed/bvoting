@@ -8,7 +8,15 @@ const Home = () => {
 			<Head>
 				<title>Home Page</title>
 			</Head>
-			<div className={styles['voting-home']}>
+			<div className="columns">
+				<div className="column">
+					<div className="box has-text-centered text-success">
+						<p>Vote casted successfully! Your vote ID is <code>3633980571</code>. You can check your vote by using this ID after the vote counting finished.</p>
+					</div>
+				</div>
+				<div className="column"></div>
+			</div>
+			{/* <div className={styles['voting-home']}>
 				<div className='columns'>
 					<div className='column is-4'>
 						<img src='/vote2.png' alt='voting' />
@@ -62,7 +70,7 @@ const Home = () => {
 						</p>
 					</div>
 				</div>
-			</div>
+			</div> */}
 		</Layout>
 	);
 };

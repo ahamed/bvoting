@@ -9,6 +9,7 @@ import Message from '../../components/message/message';
 
 import parties from '../../data/parties';
 import swal from 'sweetalert';
+import { inTime } from '../../utils';
 
 const CandidateRegistration = ({ web3: { web3, contracts, accounts } }) => {
 	const [candidate, setCandidate] = useState({
@@ -42,6 +43,15 @@ const CandidateRegistration = ({ web3: { web3, contracts, accounts } }) => {
 		const { registration } = contracts;
 
 		const { name, mobile, nid, region, partyId } = candidate;
+
+		if (inTime()) {
+			swal(
+				'Invalid',
+				'The voting period is starting. Candidates are not allowed for registration now!',
+				'error'
+			);
+			return;
+		}
 
 		const confirm = await swal(
 			'Are you sure that the provided information are authentic and correct? Careful about your information, you cannot edit this information in future.',

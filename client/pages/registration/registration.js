@@ -10,6 +10,7 @@ import swal from 'sweetalert';
 import styles from './registration.module.scss';
 import RegistrationBasic from '../../components/registrationBasic/registrationBasic';
 import Message from '../../components/message/message';
+import { inTime } from '../../utils';
 
 const Registration = ({
 	user: { name, mobile, secret, nid, region },
@@ -47,6 +48,15 @@ const Registration = ({
 
 	const handleRegister = async event => {
 		event.preventDefault();
+
+		if (inTime()) {
+			swal(
+				'Invalid',
+				'The voting period is starting. You are not eligible for registration now',
+				'error'
+			);
+			return;
+		}
 
 		const confirm = await swal(
 			'Are you sure that the provided information are authentic and correct? Careful about your information, you cannot edit this information in future.',

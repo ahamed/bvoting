@@ -9,6 +9,7 @@ import parties from '../../data/parties';
 import styles from './Ballot.module.scss';
 import Candidate from '../Candidate/Candidate';
 import swal from 'sweetalert';
+import { inTime } from '../../utils';
 
 const Ballot = ({
 	setMessage,
@@ -64,6 +65,22 @@ const Ballot = ({
 
 	const handleVoteCasting = async event => {
 		event.preventDefault();
+
+		if (!inTime()) {
+			swal(
+				'Invalid',
+				'Invalid time span for casting vote! You are too early or late for casting vote.',
+				'error'
+			);
+			return;
+		}
+
+		// swal({
+		// 	html: true,
+		// 	icon: 'success',
+		// 	title: 'Success',
+		// 	text: 'Vote casted successfully! Your vote id is "8779040598". You can check your vote after finishing the vote counting by using this vote ID.'
+		// });
 
 		if (!vote) {
 			setMessage({ type: 'error', text: 'Select a candidate first!' });

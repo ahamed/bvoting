@@ -38,7 +38,7 @@ contract Registration {
         require(registrationStatus, 'Registration Process not yet opened! Please wait for opening the registration being open.');
         require(!isAlreadyRegistered(_nid), 'You are already registered!');
 
-        voters[_nid] = Voter({voterAddress: msg.sender, voterHash: _voterHash, region: _region, coin: 1, isRegistered: true});
+        voters[_nid] = Voter({voterAddress: msg.sender, voterHash: _voterHash, region: _region, coin: 100, isRegistered: true});
         nids.push(_nid);
     }
     
@@ -69,6 +69,6 @@ contract Registration {
 
     function voterCanVote(bytes20 _nid) public view returns(bool) {
         require(isAlreadyRegistered(_nid), 'Invalid Voter Information');
-        return voters[_nid].coin == 1;
+        return voters[_nid].coin >= 1;
     }
 }
